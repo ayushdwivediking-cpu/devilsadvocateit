@@ -105,8 +105,7 @@ export default function LoginPage() {
         <div className="auth-scan" />
 
         <a href="/" className="auth-logo">
-          <div className="auth-logo-hex">DA</div>
-          <span className="auth-logo-text">DEVILS ADVOCATE <span>2.0</span></span>
+<img src="/logo.png" style={{width:'32px',height:'32px',objectFit:'contain'}} />          <span className="auth-logo-text">DEVILS ADVOCATE <span>2.0</span></span>
         </a>
 
         <div className="auth-left-content">

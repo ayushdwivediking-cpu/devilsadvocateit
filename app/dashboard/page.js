@@ -11,19 +11,15 @@ export default function Dashboard() {
 
   useEffect(() => {
     setMounted(true)
-    // Live clock
     const tick = () => {
       const now = new Date()
       setTime(now.toLocaleTimeString('en-US', { hour12: false }))
     }
     tick()
     const interval = setInterval(tick, 1000)
-
-    // Auth check
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) { window.location.href = '/auth/login'; return }
       setUser(data.user)
-      // Fetch audits
       supabase
         .from('audits')
         .select('*')
@@ -78,12 +74,10 @@ export default function Dashboard() {
 
   return (
     <div className="db-wrap">
-
-      {/* ── TOP BAR ── */}
       <header className="db-header">
         <div className="db-header-left">
           <a href="/" className="db-logo">
-            <div className="db-logo-hex">DA</div>
+            <img src="/logo.png" style={{width:'32px',height:'32px',objectFit:'contain'}} />
             <span className="db-logo-text">DEVILS ADVOCATE <span>2.0</span></span>
           </a>
           <div className="db-breadcrumb">
@@ -102,8 +96,6 @@ export default function Dashboard() {
       </header>
 
       <div className="db-body">
-
-        {/* ── SIDEBAR ── */}
         <aside className="db-sidebar">
           <nav className="db-nav">
             {[
@@ -125,7 +117,6 @@ export default function Dashboard() {
               </a>
             ))}
           </nav>
-
           <div className="db-sidebar-bottom">
             <div className="db-sys-block">
               <div className="db-sys-title">SYSTEM STATUS</div>
@@ -146,10 +137,7 @@ export default function Dashboard() {
           </div>
         </aside>
 
-        {/* ── MAIN CONTENT ── */}
         <main className="db-main">
-
-          {/* Welcome bar */}
           <div className="db-welcome">
             <div>
               <div className="db-welcome-label">COMMAND CENTER</div>
@@ -158,17 +146,16 @@ export default function Dashboard() {
               </h1>
             </div>
             <button onClick={createNewAudit} className="db-new-btn">
-              ＋ NEW STRUCTURAL AUDIT
+              + NEW STRUCTURAL AUDIT
             </button>
           </div>
 
-          {/* ── STATS ROW ── */}
           <div className="db-stats-row">
             {[
-              { label: 'TOTAL AUDITS',    value: audits.length,                                                     unit: '',   color: '#D63031' },
-              { label: 'COMPLETED',       value: audits.filter(a => a.status === 'complete').length,                unit: '',   color: '#00B894' },
-              { label: 'AVG FRAGILITY',   value: audits.length ? Math.round(audits.filter(a=>a.fragility_score).reduce((s,a)=>s+(a.fragility_score||0),0) / (audits.filter(a=>a.fragility_score).length||1)) : '—', unit: '/100', color: '#E17055' },
-              { label: 'DRAFTS',          value: audits.filter(a => a.status === 'draft').length,                   unit: '',   color: '#FDCB6E' },
+              { label: 'TOTAL AUDITS',  value: audits.length, unit: '', color: '#D63031' },
+              { label: 'COMPLETED',     value: audits.filter(a => a.status === 'complete').length, unit: '', color: '#00B894' },
+              { label: 'AVG FRAGILITY', value: audits.length ? Math.round(audits.filter(a=>a.fragility_score).reduce((s,a)=>s+(a.fragility_score||0),0) / (audits.filter(a=>a.fragility_score).length||1)) : '—', unit: '/100', color: '#E17055' },
+              { label: 'DRAFTS',        value: audits.filter(a => a.status === 'draft').length, unit: '', color: '#FDCB6E' },
             ].map(s => (
               <div key={s.label} className="db-stat-card">
                 <div className="db-stat-val" style={{ color: s.color, textShadow: `0 0 12px ${s.color}66` }}>
@@ -180,7 +167,6 @@ export default function Dashboard() {
             ))}
           </div>
 
-          {/* ── AUDITS TABLE ── */}
           <div className="db-section">
             <div className="db-section-header">
               <div className="db-section-title">
@@ -192,9 +178,7 @@ export default function Dashboard() {
 
             {loading ? (
               <div className="db-loading">
-                <div className="db-loading-dots">
-                  <span /><span /><span />
-                </div>
+                <div className="db-loading-dots"><span /><span /><span /></div>
                 <span>LOADING AUDIT DATA...</span>
               </div>
             ) : audits.length === 0 ? (
@@ -203,7 +187,7 @@ export default function Dashboard() {
                 <div className="db-empty-title">NO AUDITS YET</div>
                 <div className="db-empty-desc">Run your first structural stress test to get your Fragility Index.</div>
                 <button onClick={createNewAudit} className="db-empty-btn">
-                  ▸ START FIRST AUDIT →
+                  START FIRST AUDIT
                 </button>
               </div>
             ) : (
@@ -247,7 +231,6 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* ── HOW IT WORKS MINI ── */}
           {audits.length === 0 && !loading && (
             <div className="db-section">
               <div className="db-section-header">
@@ -260,7 +243,7 @@ export default function Dashboard() {
                 {[
                   { n: '01', icon: '◈', title: '7-DIMENSION INTAKE',     desc: 'Fill structured intake across 7 startup dimensions. ~10 mins.' },
                   { n: '02', icon: '⬡', title: '5 ADVERSARIAL AGENTS',   desc: '5 AI agents attack your startup structure simultaneously.' },
-                  { n: '03', icon: '▲', title: 'FRAGILITY INDEX OUTPUT', desc: 'Get your 0–100 deterministic score + correction roadmap.' },
+                  { n: '03', icon: '▲', title: 'FRAGILITY INDEX OUTPUT', desc: 'Get your 0-100 deterministic score + correction roadmap.' },
                 ].map(s => (
                   <div key={s.n} className="db-how-card">
                     <div className="db-how-num">{s.n}</div>
@@ -272,19 +255,15 @@ export default function Dashboard() {
               </div>
             </div>
           )}
-
         </main>
       </div>
 
       <style>{`
         .db-wrap { min-height:100vh; background:#050609; color:#F0F4FF; font-family:'Barlow Condensed',sans-serif; display:flex; flex-direction:column; }
-
-        /* HEADER */
         .db-header { height:56px; background:rgba(5,6,9,0.95); border-bottom:1px solid #162035; display:flex; align-items:center; justify-content:space-between; padding:0 24px; position:sticky; top:0; z-index:100; flex-shrink:0; }
         .db-header::after { content:''; position:absolute; bottom:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,#D63031,transparent); opacity:0.4; }
         .db-header-left { display:flex; align-items:center; gap:16px; }
         .db-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
-        .db-logo-hex { width:30px; height:30px; background:#D63031; clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); display:flex; align-items:center; justify-content:center; font-family:'Orbitron',monospace; font-size:9px; font-weight:900; color:white; box-shadow:0 0 14px rgba(214,48,49,0.5); }
         .db-logo-text { font-family:'Orbitron',monospace; font-size:12px; font-weight:700; letter-spacing:.12em; color:#F0F4FF; }
         .db-logo-text span { color:#D63031; font-size:9px; vertical-align:super; }
         .db-breadcrumb { display:flex; align-items:center; gap:8px; }
@@ -297,11 +276,7 @@ export default function Dashboard() {
         .db-user-name { font-family:'DM Mono',monospace; font-size:11px; color:#A0B4CC; letter-spacing:.1em; }
         .db-logout { background:transparent; border:1px solid #1E2D45; color:#6B7FA3; padding:6px 14px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.1em; cursor:pointer; transition:all .2s; }
         .db-logout:hover { border-color:#D63031; color:#D63031; }
-
-        /* BODY */
         .db-body { display:flex; flex:1; overflow:hidden; }
-
-        /* SIDEBAR */
         .db-sidebar { width:220px; background:#080B12; border-right:1px solid #162035; display:flex; flex-direction:column; justify-content:space-between; flex-shrink:0; }
         .db-nav { display:flex; flex-direction:column; padding:16px 0; }
         .db-nav-item { display:flex; align-items:center; gap:12px; padding:13px 20px; text-decoration:none; color:#6B7FA3; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.1em; transition:all .2s; position:relative; border-left:2px solid transparent; }
@@ -310,7 +285,6 @@ export default function Dashboard() {
         .db-nav-icon { font-size:14px; width:18px; text-align:center; flex-shrink:0; }
         .db-nav-label { flex:1; }
         .db-nav-indicator { width:4px; height:4px; border-radius:50%; background:#D63031; animation:blinkAnim 1.5s ease infinite; }
-
         .db-sidebar-bottom { padding:16px; border-top:1px solid #162035; }
         .db-sys-block { background:#0C1020; border:1px solid #162035; padding:14px; }
         .db-sys-title { font-family:'DM Mono',monospace; font-size:9px; color:#D63031; letter-spacing:.25em; margin-bottom:12px; }
@@ -319,19 +293,13 @@ export default function Dashboard() {
         .db-sys-label { font-family:'DM Mono',monospace; font-size:10px; color:#6B7FA3; }
         .db-sys-status { display:flex; align-items:center; gap:5px; font-family:'DM Mono',monospace; font-size:10px; color:#00B894; }
         .db-sys-dot { width:5px; height:5px; border-radius:50%; background:#00B894; animation:blinkAnim 2s ease infinite; }
-
-        /* MAIN */
         .db-main { flex:1; overflow-y:auto; padding:32px; display:flex; flex-direction:column; gap:28px; }
-
-        /* WELCOME */
         .db-welcome { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
         .db-welcome-label { font-family:'DM Mono',monospace; font-size:10px; color:#D63031; letter-spacing:.3em; margin-bottom:6px; }
         .db-welcome-title { font-family:'Barlow Condensed',sans-serif; font-size:clamp(28px,3vw,42px); font-weight:900; line-height:.95; letter-spacing:-.01em; }
         .db-welcome-title span { color:#D63031; }
         .db-new-btn { background:#D63031; color:white; border:none; padding:13px 24px; font-family:'Orbitron',monospace; font-size:11px; font-weight:700; letter-spacing:.12em; cursor:pointer; transition:all .3s; clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px)); white-space:nowrap; }
         .db-new-btn:hover { box-shadow:0 0 24px rgba(214,48,49,.5); transform:translateY(-1px); }
-
-        /* STATS ROW */
         .db-stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; }
         .db-stat-card { background:#0C1020; border:1px solid #162035; padding:22px 20px; position:relative; overflow:hidden; transition:border-color .2s; }
         .db-stat-card:hover { border-color:#1E2D45; }
@@ -339,30 +307,22 @@ export default function Dashboard() {
         .db-stat-val { font-family:'Orbitron',monospace; font-size:32px; font-weight:900; line-height:1; margin-bottom:6px; }
         .db-stat-unit { font-size:14px; opacity:.6; }
         .db-stat-label { font-family:'DM Mono',monospace; font-size:9px; color:#6B7FA3; letter-spacing:.2em; }
-
-        /* SECTION */
         .db-section { background:#080B12; border:1px solid #162035; overflow:hidden; }
         .db-section-header { padding:16px 24px; background:#0C1020; border-bottom:1px solid #162035; display:flex; align-items:center; justify-content:space-between; }
         .db-section-title { display:flex; align-items:center; gap:10px; font-family:'Orbitron',monospace; font-size:12px; font-weight:700; letter-spacing:.1em; color:#F0F4FF; }
         .db-section-icon { color:#D63031; }
         .db-section-count { font-family:'DM Mono',monospace; font-size:10px; color:#2A3A55; letter-spacing:.15em; }
-
-        /* LOADING */
         .db-loading { padding:60px; display:flex; flex-direction:column; align-items:center; gap:16px; font-family:'DM Mono',monospace; font-size:12px; color:#2A3A55; letter-spacing:.15em; }
         .db-loading-dots { display:flex; gap:6px; }
         .db-loading-dots span { width:6px; height:6px; background:#D63031; border-radius:50%; animation:loadDot .8s ease infinite; }
         .db-loading-dots span:nth-child(2){animation-delay:.15s} .db-loading-dots span:nth-child(3){animation-delay:.3s}
         @keyframes loadDot{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
-
-        /* EMPTY */
         .db-empty { padding:64px 32px; text-align:center; }
         .db-empty-icon { font-size:40px; color:#1E2D45; margin-bottom:16px; }
         .db-empty-title { font-family:'Orbitron',monospace; font-size:18px; font-weight:700; color:#2A3A55; letter-spacing:.1em; margin-bottom:10px; }
         .db-empty-desc { font-family:'DM Mono',monospace; font-size:12px; color:#2A3A55; margin-bottom:28px; line-height:1.7; }
         .db-empty-btn { background:#D63031; color:white; border:none; padding:14px 28px; font-family:'Orbitron',monospace; font-size:12px; font-weight:700; letter-spacing:.12em; cursor:pointer; transition:all .3s; clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px)); }
         .db-empty-btn:hover { box-shadow:0 0 24px rgba(214,48,49,.5); transform:translateY(-1px); }
-
-        /* TABLE */
         .db-table-wrap { display:flex; flex-direction:column; }
         .db-table-head { display:grid; grid-template-columns:2fr 1fr 1fr 1.2fr 1fr 1fr; padding:10px 24px; font-family:'DM Mono',monospace; font-size:9px; color:#2A3A55; letter-spacing:.2em; border-bottom:1px solid #162035; background:#050609; }
         .db-table-row { display:grid; grid-template-columns:2fr 1fr 1fr 1.2fr 1fr 1fr; padding:14px 24px; border-bottom:1px solid #0C1020; align-items:center; transition:background .2s; animation:fadeUp .4s ease both; }
@@ -370,7 +330,6 @@ export default function Dashboard() {
         .db-table-row:last-child { border-bottom:none; }
         @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
         @keyframes blinkAnim{0%,100%{opacity:1}50%{opacity:0.1}}
-
         .db-row-title { font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:700; color:#F0F4FF; display:flex; align-items:center; gap:10px; }
         .db-row-idx { font-family:'DM Mono',monospace; font-size:10px; color:#2A3A55; }
         .db-row-status { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.1em; display:flex; align-items:center; gap:6px; }
@@ -380,8 +339,6 @@ export default function Dashboard() {
         .db-row-date { font-family:'DM Mono',monospace; font-size:10px; color:#6B7FA3; }
         .db-row-btn { font-family:'DM Mono',monospace; font-size:10px; color:#D63031; text-decoration:none; letter-spacing:.08em; border:1px solid rgba(214,48,49,.2); padding:6px 12px; transition:all .2s; display:inline-block; width:fit-content; }
         .db-row-btn:hover { background:rgba(214,48,49,.08); border-color:#D63031; }
-
-        /* HOW GRID */
         .db-how-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
         .db-how-card { background:#0C1020; padding:28px 24px; position:relative; overflow:hidden; border:1px solid #162035; transition:border-color .2s; }
         .db-how-card:hover { border-color:#1E2D45; }
@@ -389,7 +346,6 @@ export default function Dashboard() {
         .db-how-icon { font-size:22px; color:#D63031; margin-bottom:14px; }
         .db-how-title { font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:800; color:#D63031; letter-spacing:.05em; margin-bottom:8px; }
         .db-how-desc { font-family:'DM Mono',monospace; font-size:11px; color:#6B7FA3; line-height:1.7; }
-
         @media(max-width:900px){
           .db-body{flex-direction:column;}
           .db-sidebar{width:100%;flex-direction:row;height:auto;}
