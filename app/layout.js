@@ -25,9 +25,11 @@ const barlowCondensed = Barlow_Condensed({
 
 export const metadata = {
   title: "Devils Advocate 2.0 — Expose Fragility Before Capital Does",
-  description:
-    "A deterministic AI engine that deploys 5 adversarial agents against your startup structure and outputs a 0–100 Fragility Index.",
-};
+  description: "Pre-investment structural stress engine for startups.",
+  icons: {
+    icon: '/logo.png',
+  },
+}
 
 export default function RootLayout({ children }) {
   return (
